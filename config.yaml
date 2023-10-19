@@ -22,7 +22,7 @@ Service:
     Locale: zh-CN
     ShortDescription: spring boot demo
     Image: 'icons/service_logo.png'
-    Name: SpringBoot单机版(软件包)
+    Name: SpringBoot单机版(ECS镜像)
   ShareType: Public
   ApprovalType: Manual
 Artifact:
