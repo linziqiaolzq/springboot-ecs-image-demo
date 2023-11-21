@@ -19,9 +19,6 @@ Service:
           - ap-southeast-1
   ServiceType: private
   OperationMetadata:
-    PrometheusConfigMap:
-      ECS单机版:
-        EnablePrometheus: false
     ModifyParametersConfig:
       - TemplateName: ECS单机版
         Operation:
