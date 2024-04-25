@@ -1,41 +1,41 @@
-# 服务模版说明文档
+# 服务模板说明文档
 
 ## 服务说明
 
-本文介绍基于springboot+ecs镜像的单机ecs服务快速上手流程，本示例对应的[git地址](https://github.com/aliyun-computenest/springboot-ecs-image-demo)
+本文介绍基于SpringBoot+ecs镜像的单机ecs服务快速上手流程，本示例对应的Git仓库地址：[springboot-ecs-image-demo](https://github.com/aliyun-computenest/springboot-ecs-image-demo)。
 
-本示例会自动的构建计算巢服务，具体的服务构建流程为
+本示例会自动的构建计算巢服务，具体的服务构建流程为：
 1. OOS ACS-ECS-UpdateImage模版执行命令构建ecs镜像
 2. 通过构建好的ecs镜像创建ECS镜像部署物并完成分发
 3. 创建计算巢服务并关联镜像部署物
 
-创建过程大约持续15分钟，当服务变成待提交后构建成功
+创建过程大约持续15分钟，当服务变成待提交后构建成功。
 
 ## 部署架构
 
-本部署架构为单机ecs部署，通过公网ip 8080端口访问
+本部署架构为单机ecs部署，通过公网ip 8080端口访问。
 <img src="architecture.png" width="1500" height="700" align="bottom"/>
 
 ## 服务构建计费说明
 
 测试本服务构建需要支付构建镜像过程中的ECS费用和快照费用，请确保账号中有足够的余额，预计消耗金额：
-- 构建镜像，需要创建ECS实例（ecs.c6.large，5Mbps公网带宽，40GiB高效云盘系统盘）：0.660元/小时，预计消耗总金额：0.660*0.1≈0.07元（构建镜像预计10分钟以内）
-- 快照费用：该服务创建快照大小为40GiB，构建镜像地域默认为新加坡，那么消耗金额为：0.136元/GB/月 * 40 GB * 1月）/ 30天 / 24小时≈0.007元/小时,[快照计费参考](https://help.aliyun.com/zh/ecs/product-overview/snapshots-1)
+- 构建镜像，需要创建ECS实例（ecs.c6.large，5Mbps公网带宽，40GiB高效云盘系统盘）：0.660元/小时，预计消耗总金额：0.660*0.1≈0.07元（构建镜像预计10分钟以内）。
+- 快照费用：该服务创建快照大小为40GiB，构建镜像地域默认为新加坡，那么消耗金额为：0.136元/GB/月 * 40 GB * 1月）/ 30天 / 24小时≈0.007元/小时,[快照计费参考](https://help.aliyun.com/zh/ecs/product-overview/snapshots-1)。
 
-创建服务实例涉及的费用参考服务实例计费说明
+创建服务实例涉及的费用参考服务实例计费说明。
 
 ## RAM账号所需权限
 
 
-本服务需要对ECS、VPC等资源进行访问和创建操作，若您使用RAM用户创建服务实例，需要在创建服务实例前，对使用的RAM用户的账号添加相应资源的权限。添加RAM权限的详细操作，请参见[为RAM用户授权](https://help.aliyun.com/document_detail/121945.html)。所需权限如下表所示。
+本服务需要对ECS、VPC等资源进行访问和创建操作，若您使用RAM用户创建服务实例，需要在创建服务实例前，对使用的RAM用户的账号添加相应资源的权限。添加RAM权限的详细操作，请参见[为RAM用户授权](https://help.aliyun.com/document_detail/121945.html)。所需权限如下表所示：
 
-| 权限策略名称                          | 备注                     |
-|---------------------------------|------------------------|
-| AliyunECSFullAccess             | 管理云服务器服务（ECS）的权限       |
-| AliyunVPCFullAccess             | 管理专有网络（VPC）的权限         |
-| AliyunROSFullAccess             | 管理资源编排服务（ROS）的权限       |
-| AliyunComputeNestUserFullAccess | 管理计算巢服务（ComputeNest）的用户侧权限 |
-| AliyunComputeNestSupplierFullAccess | 管理计算巢服务（ComputeNest）的服务商侧权限 ｜
+| 权限策略名称                              | 备注                            |
+|-------------------------------------|-------------------------------|
+| AliyunECSFullAccess                 | 管理云服务器服务（ECS）的权限              |
+| AliyunVPCFullAccess                 | 管理专有网络（VPC）的权限                |
+| AliyunROSFullAccess                 | 管理资源编排服务（ROS）的权限              |
+| AliyunComputeNestUserFullAccess     | 管理计算巢服务（ComputeNest）的用户侧权限    |
+| AliyunComputeNestSupplierFullAccess | 管理计算巢服务（ComputeNest）的服务商侧权限 ｜ |
 
 ## 服务实例计费说明
 
@@ -65,14 +65,14 @@
 
 ### 部署参数说明
 
-| 参数组         | 参数项    | 说明                                                                     |
-|-------------|--------|------------------------------------------------------------------------|
-| 服务实例        | 服务实例名称 | 长度不超过64个字符，必须以英文字母开头，可包含数字、英文字母、短划线（-）和下划线（_） |
-|             | 地域     | 服务实例部署的地域                                                              |
-|             | 付费类型   | 资源的计费类型：按量付费和包年包月                                                      |
-| ECS实例配置  | 实例类型   | 可用区下可以使用的实例规格                                                          |
-|              | 实例密码   | 长度8-30，必须包含三项（大写字母、小写字母、数字、 ()`~!@#$%^&*-+=&#124;{}[]:;'<>,.?/ 中的特殊符号） |
-| 网络配置        | 可用区    | ECS实例所在可用区                                                             |
+| 参数组         | 参数项    | 说明                                                                      |
+|-------------|--------|-------------------------------------------------------------------------|
+| 服务实例        | 服务实例名称 | 长度不超过64个字符，必须以英文字母开头，可包含数字、英文字母、短划线（-）和下划线（_）。                          |
+|             | 地域     | 服务实例部署的地域。                                                              |
+|             | 付费类型   | 资源的计费类型：按量付费和包年包月。                                                      |
+| ECS实例配置  | 实例类型   | 可用区下可以使用的实例规格。                                                          |
+|              | 实例密码   | 长度8-30，必须包含三项（大写字母、小写字母、数字、 ()`~!@#$%^&*-+=&#124;{}[]:;'<>,.?/ 中的特殊符号）。 |
+| 网络配置        | 可用区    | ECS实例所在可用区。                                                             |
 
 ### 部署步骤
 
@@ -82,21 +82,20 @@
  ![image.png](2.png)
 2. 参数填写完成后可以看到对应询价明细，确认参数后点击**下一步：确认订单**。
  ![image.png](3.png)
-3. 确认订单完成后同意服务协议并点击**立即创建**
-   进入部署阶段。
+3. 确认订单完成后同意服务协议并点击**立即创建**，进入部署阶段。
     ![image.png](4.png)
    
     ![image.png](5.png)
 4. 等待部署完成后就可以开始使用服务，进入服务实例详情点击visitUrl。
     ![image.png](6.png)
-5. 部署结果
+5. 部署结果：
     ![image.png](7.png)
 
 
 ## 服务详细说明
 
-本文通过将[代码](https://atomgit.com/flow-example/spring-boot)构建后，将deploy.sh和application.jar打包成package.tgz放到artifacts目录下
-然后OOS构建镜像SpringBootImage，构建镜像的基础镜像为centos_7_8_x64_20G_alibase_20211130.vhd，执行的命令为:
+本文通过将[spring-boot](https://atomgit.com/flow-example/spring-boot)构建后，将deploy.sh和application.jar打包成package.tgz放到artifacts目录下，
+然后通过OOS构建镜像SpringBootImage，构建镜像的基础镜像为centos_7_8_x64_20G_alibase_20211130.vhd，执行的命令为:
 ```bash
       yum install -y java
       yum install -y git
@@ -111,9 +110,9 @@
       rm package.tgz
 ```
 
-templates/template.yaml主要由三部分组成
+templates/template.yaml主要由三部分组成：
 
-1. Parameters定义需要用户填写的参数，包括付费类型，实例规格和实例密码可用区参数
+1. Parameters定义需要用户填写的参数，包括付费类型，实例规格和实例密码可用区参数。
 ```
   PayType:
     Type: String
@@ -203,7 +202,7 @@ templates/template.yaml主要由三部分组成
     AssociationProperty: ALIYUN::ECS::Instance::ZoneId
 ```
 
-2. Resources定义需要开的资源，包括新开的vpc, vswitch和ecs实例, 以及执行命令的定义, InstanceGroup.ImageId定义为springboot，最终会由ecs镜像的部署物替换成对应地域的真正的镜像ID
+2. Resources定义需要开的资源，包括新开的vpc, vswitch和ecs实例, 以及执行命令的定义, InstanceGroup.ImageId定义为springboot，最终会由ecs镜像的部署物替换成对应地域的真正的镜像ID。
 ```
   Vpc:
     Type: ALIYUN::ECS::VPC
@@ -267,7 +266,7 @@ templates/template.yaml主要由三部分组成
           - AccountId:
               Ref: ALIYUN::TenantId
 ```
-3. Outputs定义需要最终在计算巢概览页中对用户展示的输出
+3. Outputs定义需要最终在计算巢概览页中对用户展示的输出。
 
 ```
 Outputs:
