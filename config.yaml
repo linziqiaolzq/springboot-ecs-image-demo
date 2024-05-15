@@ -3,7 +3,7 @@ Service:
   DeployType: ros
   DeployMetadata:
     ServiceInstanceNameRule:
-      Prefix: dm
+      Prefix: dm-
     SupplierDeployMetadata:
       ArtifactRelation:
         'springboot':
@@ -11,7 +11,7 @@ Service:
           ArtifactVersion: ${Artifact.SpringBootImage.ArtifactVersion}
     TemplateConfigs:
       - Name: ECS单机版
-        Url: 'templates/template.yaml'
+        Url: 'ros_templates/template.yaml'
         AllowedRegions:
           - cn-beijing
           - cn-hangzhou
@@ -32,7 +32,7 @@ Service:
   ServiceInfo:
     Locale: zh-CN
     ShortDescription: spring boot demo
-    Image: 'icons/service_logo.png'
+    Image: 'resources/icons/service_logo.png'
     Name: SpringBoot单机版(ECS镜像)
   ShareType: Public
   ApprovalType: Manual
