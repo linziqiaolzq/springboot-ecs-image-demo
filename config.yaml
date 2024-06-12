@@ -62,11 +62,11 @@ ImageBuilder:
       #!/bin/bash
       yum install -y java
       yum install -y git
-
+      
       # 下载包 例子是从git获取
       git clone https://github.com/aliyun-computenest/springboot-ecs-image-demo.git
       mkdir -p /home/admin/application
-      cp /root/springboot-ecs-image-demo/artifacts/package.tgz /home/admin/application
+      cp /root/springboot-ecs-image-demo/resources/artifact_resources/file/package.tgz /home/admin/application
       cd /home/admin/application
       tar xvf package.tgz
       rm /root/springboot-ecs-image-demo
