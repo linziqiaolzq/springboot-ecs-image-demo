@@ -1,0 +1,74 @@
+Service:
+  RegionId: cn-hangzhou
+  DeployType: ros
+  DeployMetadata:
+    ServiceInstanceNameRule:
+      Prefix: dm-
+    SupplierDeployMetadata:
+      ArtifactRelation:
+        'springboot':
+          ArtifactId: ${Artifact.SpringBootImage.ArtifactId}
+          ArtifactVersion: ${Artifact.SpringBootImage.ArtifactVersion}
+    TemplateConfigs:
+      - Name: ECS单机版
+        Url: 'ros_templates/template.yaml'
+        AllowedRegions:
+          - cn-beijing
+          - cn-hangzhou
+          - cn-shanghai
+          - ap-southeast-1
+  ServiceType: private
+  OperationMetadata:
+    ModifyParametersConfig:
+      - TemplateName: ECS单机版
+        Operation:
+          - Name: 变配ECS实例规格
+            Description: 变配ECS实例规格
+            Type: Custom
+            SupportPredefinedParameters: false
+            EnableLogging: false
+            Parameters:
+              - EcsInstanceType
+  ServiceInfo:
+    Locale: zh-CN
+    ShortDescription: spring boot demo
+    Image: 'resources/icons/service_logo.png'
+    Name: SpringBoot单机版(ECS镜像)
+  ShareType: Public
+  ApprovalType: Manual
+Artifact:
+  SpringBootImage:
+      ArtifactType: EcsImage
+      ArtifactName: SpringBootEcsImage
+      Description: SpringBootEcsImage
+      ArtifactProperty:
+        RegionId: ${ImageBuilder.SpringBootImage.RegionId}
+        ImageId: ${ImageBuilder.SpringBootImage.SourceImageId}
+      SupportRegionIds:
+          - cn-beijing
+          - cn-hangzhou
+          - cn-shanghai
+          - ap-southeast-1
+ImageBuilder:
+  SpringBootImage:
+    RegionId: ap-southeast-1
+    SourceImageId: centos_7_8_x64_20G_alibase_20211130.vhd
+    InstanceType: ecs.c6.large
+    InternetMaxBandwidthOut: 5
+    CommandType: RunShellScript
+    Timeout: 10800
+    Tags: []
+    CommandContent: |-
+      #!/bin/bash
+      yum install -y java
+      yum install -y git
+      
+      # 下载包 例子是从git获取
+      git clone https://github.com/aliyun-computenest/springboot-ecs-image-demo.git
+      mkdir -p /home/admin/application
+      cp /root/springboot-ecs-image-demo/resources/artifact_resources/file/package.tgz /home/admin/application
+      cd /home/admin/application
+      tar xvf package.tgz
+      rm /root/springboot-ecs-image-demo
+      rm package.tgz
+
