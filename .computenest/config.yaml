@@ -13,10 +13,7 @@ Service:
       - Name: ECS单机版
         Url: 'ros_templates/template.yaml'
         AllowedRegions:
-          - cn-beijing
           - cn-hangzhou
-          - cn-shanghai
-          - ap-southeast-1
   ServiceType: private
   OperationMetadata:
     ModifyParametersConfig:
@@ -45,10 +42,7 @@ Artifact:
         RegionId: ${ImageBuilder.SpringBootImage.RegionId}
         ImageId: ${ImageBuilder.SpringBootImage.SourceImageId}
       SupportRegionIds:
-          - cn-beijing
           - cn-hangzhou
-          - cn-shanghai
-          - ap-southeast-1
 ImageBuilder:
   SpringBootImage:
     RegionId: ap-southeast-1

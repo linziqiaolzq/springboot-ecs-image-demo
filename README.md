@@ -70,7 +70,7 @@
 
 ```
 .
-└── .computenest                   			- 存放计算巢服务构建配置
+└── .computenest                   - 存放计算巢服务构建配置
    ├── README.md                   - README
    ├── docs                        - 服务文档相关文件
    │   └── index.md
