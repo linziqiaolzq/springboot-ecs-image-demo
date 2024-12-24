@@ -7,8 +7,8 @@ Service:
     SupplierDeployMetadata:
       ArtifactRelation:
         'springboot':
-          ArtifactId: ${Artifact.SpringBootImage.ArtifactId}
-          ArtifactVersion: ${Artifact.SpringBootImage.ArtifactVersion}
+          ArtifactId: ${Artifact.SpringBootEcsImage.ArtifactId}
+          ArtifactVersion: ${Artifact.SpringBootEcsImage.ArtifactVersion}
     TemplateConfigs:
       - Name: ECS单机版
         Url: 'ros_templates/template.yaml'
@@ -35,7 +35,7 @@ Service:
   ShareType: Public
   ApprovalType: Manual
 Artifact:
-  SpringBootImage:
+  SpringBootEcsImage:
     ArtifactType: EcsImage
     ArtifactName: SpringBootEcsImage
     Description: SpringBootEcsImage
