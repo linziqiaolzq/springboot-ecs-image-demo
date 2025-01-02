@@ -14,7 +14,7 @@ Service:
         Url: 'ros_templates/template.yaml'
         ArchitectureDiagramUrl: 'docs/architecture.png'
         AllowedRegions:
-          - cn-hangzhou
+          - ap-southeast-1
   ServiceType: private
   OperationMetadata:
     ModifyParametersConfig:
@@ -56,4 +56,4 @@ Artifact:
         rm /root/springboot-ecs-image-demo
         rm package.tgz
     SupportRegionIds:
-      - cn-hangzhou
+      - ap-southeast-1
