@@ -15,6 +15,9 @@ Service:
         ArchitectureDiagramUrl: 'docs/architecture.png'
         AllowedRegions:
           - cn-hangzhou
+        OutputConfigs:
+          - OutputKey: wenniantest
+            EnableWebProxy: true
   ServiceType: private
   OperationMetadata:
     ModifyParametersConfig:
@@ -53,7 +56,7 @@ Artifact:
         cp /root/springboot-ecs-image-demo/.computenest/resources/artifact_resources/file/package.tgz /home/admin/application
         cd /home/admin/application
         tar xvf package.tgz
-        rm /root/springboot-ecs-image-demo
+        rm -rf /root/springboot-ecs-image-demo
         rm package.tgz
     SupportRegionIds:
       - cn-hangzhou
