@@ -14,10 +14,7 @@ Service:
         Url: 'ros_templates/template.yaml'
         ArchitectureDiagramUrl: 'docs/architecture.png'
         AllowedRegions:
-          - cn-hangzhou
-        OutputConfigs:
-          - OutputKey: wenniantest
-            EnableWebProxy: true
+          - ap-southeast-1
   ServiceType: private
   OperationMetadata:
     ModifyParametersConfig:
