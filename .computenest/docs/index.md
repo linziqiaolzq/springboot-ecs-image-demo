@@ -5,9 +5,9 @@
 本文介绍基于SpringBoot+ecs镜像的单机ecs服务快速上手流程，本示例对应的Git仓库地址：[springboot-ecs-image-demo](https://github.com/aliyun-computenest/springboot-ecs-image-demo)。
 
 本示例会自动的构建计算巢服务，具体的服务构建流程为：
-1. OOS ACS-ECS-UpdateImage模版执行命令构建ecs镜像
-2. 通过构建好的ecs镜像创建ECS镜像部署物并完成分发
-3. 创建计算巢服务并关联镜像部署物
+1. OOS ACS-ECS-UpdateImage模版执行命令构建ecs镜像.
+2. 通过构建好的ecs镜像创建ECS镜像部署物并完成分发.
+3. 创建计算巢服务并关联镜像部署物.
 
 创建过程大约持续15分钟，当服务变成待提交后构建成功。
 
