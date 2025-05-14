@@ -41,7 +41,7 @@ Artifact:
     Description: SpringBootEcsImage
     ArtifactBuildProperty:
       RegionId: ap-southeast-1
-      SourceImageId: centos_7_8_x64_20G_alibase_20211130.vhd
+      SourceImageId: centos_7_9_x64_20G_alibase_20240403.vhd
       CommandContent: |-
         #!/bin/bash
         yum install -y java
