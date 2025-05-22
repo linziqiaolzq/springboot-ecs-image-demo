@@ -27,6 +27,13 @@ Service:
             EnableLogging: false
             Parameters:
               - EcsInstanceType
+  UpgradeMetadata:
+    Description: 升级
+    SupportRollback: true
+    SupportUpgradeFromVersions: [ ]
+    UpgradeComponents:
+      - Configuration
+      - Resource
   ServiceInfo:
     Locale: zh-CN
     ShortDescription: spring boot demo
