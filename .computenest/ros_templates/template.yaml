@@ -168,12 +168,23 @@ Parameters:
     Label:
       en: Instance Type
       zh-cn: 实例类型
+    AllowedValues:
+      - ecs.g8i.2xlarge
+      - ecs.g8i.large
+      - ecs.gn7i-c8g1.2xlarge
+      - ecs.gn7i-c32g1.8xlarge
+      - ecs.gn7i-c16g1.4xlarge
+      - ecs.gn7i-c32g1.16xlarge
+      - ecs.gn6i-c24g1.6xlarge
+      - ecs.gn6i-c24g1.12xlarge
+      - ecs.gn6v-c8g1.2xlarge
+      - ecs.gn6v-c8g1.8xlarge
+      - ecs.gn7i-c8g1.2xlarge.limit
+      - ecs.gn6i-c8g1.2xlarge.limit
     AssociationProperty: ALIYUN::ECS::Instance::InstanceType
     AssociationPropertyMetadata:
       InstanceChargeType: ${PayType}
-      Constraints:
-        InstanceTypeFamily:
-          - ecs.u1
+    Default: {DefaultEcsInstanceType}
   InstancePassword:
     NoEcho: true
     Type: String
@@ -273,42 +284,6 @@ Resources:
         - Category: cloud_essd
           Size: 200
       # 数据盘初始化和挂载
-      UserData: |
-        #cloud-config
-        bootcmd:
-          - |
-            #!/bin/bash
-            function init_and_mount_data_disk() {
-                disk_device="/dev/vdb"
-                parted_disk_device="/dev/vdb1"
-                mount_point="/data"
-                # 已初始化的磁盘，跳过初始化，直接挂载
-                if blkid -o value -s TYPE $disk_device &>/dev/null; then
-                  echo "Disk is already initialized."
-                else
-                  echo "Disk is not initialized, initializing..."
-                  cat >> /root/InitDataDisk.sh << "EOF"
-            #!/bin/bash
-            echo "p
-            n
-            p
-        
-        
-        
-            w
-            " |  fdisk -u /dev/vdb
-            EOF
-                  /bin/bash /root/InitDataDisk.sh
-                  rm -f /root/InitDataDisk.sh
-                  mkfs -t ext4 $parted_disk_device
-                fi
-        
-                cp /etc/fstab /etc/fstab.bak
-                mkdir $mount_point
-                echo `blkid $parted_disk_device | awk '{print $2}' | sed 's/\\\"//g'` $mount_point ext4 defaults 0 0 >> /etc/fstab
-                mount -a
-            }
-            init_and_mount_data_disk
   RunInstallCommand:
     Type: ALIYUN::ECS::RunCommand
     Properties:
@@ -323,22 +298,12 @@ Resources:
         Fn::Sub:
           - |
             #!/bin/bash
-            function save_log_to_data_disk() {
-              mkdir -p /data/logs
-              chmod -R 666 /data/logs
-              # 使用数据盘目录存放日志，避免升级Ecs镜像时数据丢失
-              sed -i 's/LOG_DIR/\/data/g' /home/admin/application/deploy.sh
-            }
-            # 用于触发版本升级
-            echo "当前时间：${CurTime}"
-            cd /home/admin/application
-            /bin/bash deploy.sh stop
-            save_log_to_data_disk
-            /bin/bash deploy.sh start
+            echo "" >> /root/.env
+            
+            docker start model
+            docker exec model bash -c "cd /root/$repo_name && nohup python app.py > /root/app.log 2>&1 &"
           - AccountId:
               Ref: ALIYUN::TenantId
-            CurTime:
-              Ref: CurTime
 Outputs:
   VisitUrl:
     Description:

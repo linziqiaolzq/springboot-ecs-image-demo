@@ -3,11 +3,12 @@ Service:
   DeployType: ros
   DeployMetadata:
     ServiceInstanceNameRule:
-      Prefix: dm-
+      Prefix: ms-
     SupplierDeployMetadata:
       ArtifactRelation:
         'springboot':
-          ArtifactId: artifact-0442203fa4e342c2af15
+          ArtifactId: ${Artifact.EcsImage.ArtifactId}
+          ArtifactVersion: ${Artifact.EcsImage.ArtifactVersion}
     TemplateConfigs:
       - Name: ECS单机版
         Url: 'ros_templates/template.yaml'
@@ -43,28 +44,81 @@ Service:
           - me-central-1
           - eu-central-1
   ServiceType: private
-  OperationMetadata:
-    ModifyParametersConfig:
-      - TemplateName: ECS单机版
-        Operation:
-          - Name: 变配ECS实例规格
-            Description: 变配ECS实例规格
-            Type: Custom
-            SupportPredefinedParameters: false
-            EnableLogging: false
-            Parameters:
-              - EcsInstanceType
-  UpgradeMetadata:
-    Description: 升级
-    SupportRollback: true
-    SupportUpgradeFromVersions: [ ]
-    UpgradeComponents:
-      - Configuration
-      - Resource
   ServiceInfo:
     Locale: zh-CN
     ShortDescription: spring boot demo
     Image: 'resources/icons/service_logo.png'
-    Name: SpringBoot单机版(ECS镜像)
+    Name: 创空间服务
   ShareType: Public
   ApprovalType: Manual
+Artifact:
+  EcsImage:
+    ArtifactType: EcsImage
+    ArtifactName: EcsImage
+    Description: EcsImage
+    ArtifactBuildProperty:
+      RegionId: ap-southeast-1
+      SourceImageId: m-t4n7ttu9p7cbnxjlex02
+      CommandContent: |-
+        #!/bin/bash
+        repo_url="https://www.modelscope.cn/studios/${ModelID}.git"
+        repo_name=$(basename "$repo_url" .git)
+        git clone "$repo_url" "/root/$repo_name"
+    
+        echo "" > /root/.env
+    
+        DOCKER_GPU_FLAG=""
+        if [[ "${EcsInstanceType}" == "ecs.g8i.2xlarge" || "${EcsInstanceType}" == "ecs.g8i.large" ]]; then
+          DOCKER_GPU_FLAG=""
+        else
+          DOCKER_GPU_FLAG="--gpus all"
+        fi
+    
+        docker run -t -d \
+        --entrypoint /bin/bash \
+        --name=model \
+        --ipc=host \
+        --cap-add=SYS_PTRACE \
+        $DOCKER_GPU_FLAG \
+        --privileged \
+        --ulimit memlock=-1 \
+        --ulimit stack=67108864 \
+        -p 7860:7860 \
+        -e GRADIO_SERVER_NAME=0.0.0.0 \
+        -e GRADIO_SERVER_PORT=7860 \
+        --env-file /root/.env \
+        -v /root:/root \
+        modelscope-registry.us-west-1.cr.aliyuncs.com/modelscope-repo/modelscope:ubuntu22.04-cuda12.1.0-py311-torch2.3.1-tf2.16.1-1.26.0
+        
+        docker exec model bash -c "pip install gradio==<gradioVersion>"
+        docker exec model bash -c "cd /root/$repo_name && pip install --no-cache-dir -r requirements.txt"
+    SupportRegionIds:
+      - cn-qingdao
+      - cn-beijing
+      - cn-zhangjiakou
+      - cn-huhehaote
+      - cn-wulanchabu
+      - cn-hangzhou
+      - cn-shanghai
+      - cn-nanjing
+      - cn-shenzhen
+      - cn-heyuan
+      - cn-guangzhou
+      - cn-fuzhou
+      - cn-wuhan-lr
+      - cn-chengdu
+      - cn-hongkong
+      - ap-northeast-1
+      - ap-northeast-2
+      - ap-southeast-1
+      - ap-southeast-3
+      - ap-southeast-6
+      - ap-southeast-5
+      - ap-southeast-7
+      - us-east-1
+      - us-west-1
+      - na-south-1
+      - eu-west-1
+      - me-east-1
+      - me-central-1
+      - eu-central-1
