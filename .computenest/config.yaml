@@ -12,6 +12,9 @@ Service:
     TemplateConfigs:
       - Name: ECS单机版
         Url: 'ros_templates/template.yaml'
+        OutputConfigs:
+          - OutputKey: VisitUrl
+            EnableWebProxy: true
         ArchitectureDiagramUrl: 'docs/architecture.png'
         AllowedRegions:
           - cn-qingdao

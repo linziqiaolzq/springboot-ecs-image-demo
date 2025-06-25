@@ -241,7 +241,7 @@ Resources:
           - Ref: VpcId
       # 安全组入端口
       SecurityGroupIngress:
-        - PortRange: 8080/8080
+        - PortRange: 7860/7860
           Priority: 1
           SourceCidrIp: 0.0.0.0/0
           IpProtocol: tcp
@@ -311,13 +311,13 @@ Outputs:
       zh-cn: 访问页面。
     Value:
       Fn::Sub:
-      - http://${Address}:8080
-      - Address:
-          Fn::Select:
-          - 0
-          - Fn::GetAtt:
-            - InstanceGroup
-            - PublicIps
+        - http://${Endpoint}:7860
+        - Endpoint:
+            Fn::Select:
+              - 0
+              - Fn::GetAtt:
+                  - InstanceGroup
+                  - PrivateIps
 Metadata:
   ALIYUN::ROS::Interface:
     ParameterGroups:
