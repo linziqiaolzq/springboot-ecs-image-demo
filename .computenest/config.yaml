@@ -93,7 +93,6 @@ Artifact:
         -v /root:/root \
         modelscope-registry.us-west-1.cr.aliyuncs.com/modelscope-repo/modelscope:ubuntu22.04-cuda12.1.0-py311-torch2.3.1-tf2.16.1-1.26.0
         
-        docker exec model bash -c "pip install gradio==<gradioVersion>"
         docker exec model bash -c "cd /root/$repo_name && pip install --no-cache-dir -r requirements.txt"
     SupportRegionIds:
       - cn-qingdao
