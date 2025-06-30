@@ -181,6 +181,7 @@ Parameters:
       - ecs.gn6v-c8g1.8xlarge
       - ecs.gn7i-c8g1.2xlarge.limit
       - ecs.gn6i-c8g1.2xlarge.limit
+      - ecs.gn7e-c16g1.4xlarge
     AssociationProperty: ALIYUN::ECS::Instance::InstanceType
     AssociationPropertyMetadata:
       InstanceChargeType: ${PayType}
