@@ -69,6 +69,15 @@ Artifact:
         git clone "$repo_url" "/root/$repo_name"
     
         echo "" > /root/.env
+        
+        cat << EOF > /root/start_app.sh
+        #!/bin/bash
+        # 加载 .env 文件中的环境变量
+        export \$(grep -v '^#' /root/.env | xargs)
+        # 启动应用
+        cd /root/$repo_name && python app.py
+        EOF
+        chmod +x /root/start_app.sh
     
         DOCKER_GPU_FLAG=""
         if [[ "${EcsInstanceType}" == "ecs.g8i.2xlarge" || "${EcsInstanceType}" == "ecs.g8i.large" ]]; then
