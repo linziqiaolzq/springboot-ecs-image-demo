@@ -80,11 +80,6 @@ Artifact:
         chmod +x /root/start_app.sh
     
         DOCKER_GPU_FLAG=""
-        if [[ "${EcsInstanceType}" == "ecs.g8i.2xlarge" || "${EcsInstanceType}" == "ecs.g8i.large" ]]; then
-          DOCKER_GPU_FLAG=""
-        else
-          DOCKER_GPU_FLAG="--gpus all"
-        fi
     
         docker run -t -d \
         --entrypoint /bin/bash \
