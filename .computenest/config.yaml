@@ -6,7 +6,7 @@ Service:
       Prefix: ms-
     SupplierDeployMetadata:
       ArtifactRelation:
-        'springboot':
+        'ecsImage':
           ArtifactId: ${Artifact.EcsImage.ArtifactId}
           ArtifactVersion: ${Artifact.EcsImage.ArtifactVersion}
     TemplateConfigs:
@@ -49,7 +49,7 @@ Service:
   ServiceType: private
   ServiceInfo:
     Locale: zh-CN
-    ShortDescription: spring boot demo
+    ShortDescription: 本服务是一个基于创空间的模型服务。
     Image: 'resources/icons/service_logo.png'
     Name: 创空间服务
   ShareType: Public

@@ -270,7 +270,7 @@ Resources:
         Ref: SecurityGroup
       ZoneId:
         Ref: ZoneId
-      ImageId: springboot
+      ImageId: ecsImage
       Password:
         Ref: InstancePassword
       InstanceType:
