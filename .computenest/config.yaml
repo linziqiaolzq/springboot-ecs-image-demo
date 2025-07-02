@@ -98,6 +98,42 @@ Artifact:
         modelscope-registry.us-west-1.cr.aliyuncs.com/modelscope-repo/modelscope:ubuntu22.04-cuda12.1.0-py311-torch2.3.1-tf2.16.1-1.26.0
         
         docker exec model bash -c "cd /root/$repo_name && pip install --no-cache-dir -r requirements.txt"
+        
+        docker exec model bash -c "/root/start_app.sh" 2>&1 | stdbuf -oL tee /dev/tty | {
+            last_output_time=$(date +%s)
+            timeout=15
+
+            ( 
+                while true; do
+                    current_time=$(date +%s)
+                    elapsed_time=$((current_time - last_output_time))
+                    if [ "$elapsed_time" -ge "$timeout" ]; then
+                        echo "超时（$timeout 秒内无输出），准备终止命令..."
+
+                        PIDS=$(docker exec model ps aux | grep -E "/bin/bash /root/start_app.sh|python app.py" | grep -v grep | awk '{print $2}')
+
+                        if [ -n "$PIDS" ]; then
+                            docker exec model kill -INT $PIDS
+                            echo "已发送 SIGINT 到 PID: $PIDS"
+
+                            sleep 1
+
+                            docker exec model kill -9 $PIDS 2>/dev/null
+                            echo "已强制终止 PID: $PIDS"
+                        fi
+                        exit 1
+                    fi
+                    sleep 1
+                done
+            ) &
+
+            while IFS= read -r line; do
+                last_output_time=$(date +%s)
+            done
+
+            wait
+        }
+
     SupportRegionIds:
       - cn-qingdao
       - cn-beijing
