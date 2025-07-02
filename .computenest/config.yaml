@@ -97,7 +97,7 @@ Artifact:
         -v /root:/root \
         modelscope-registry.us-west-1.cr.aliyuncs.com/modelscope-repo/modelscope:ubuntu22.04-cuda12.1.0-py311-torch2.3.1-tf2.16.1-1.26.0
         
-        docker exec model bash -c "cd /root/$repo_name && pip install --no-cache-dir -r requirements.txt"
+        docker exec model sh -c "if [ -f /root/$repo_name/requirements.txt ]; then cd /root/$repo_name && pip install --no-cache-dir -r requirements.txt; fi"
         
         docker exec model bash -c "/root/start_app.sh" 2>&1 | stdbuf -oL tee /dev/tty | {
             last_output_time=$(date +%s)
