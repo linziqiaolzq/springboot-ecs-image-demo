@@ -1,103 +1,53 @@
-# 服务模板说明文档
+# 吉卜力风格生图计算巢快速部署
 
-## 服务说明
 
-本文介绍基于SpringBoot+ecs镜像的单机ecs服务快速上手流程，本示例对应的Git仓库地址：[springboot-ecs-image-demo](https://github.com/aliyun-computenest/springboot-ecs-image-demo)。
+>**免责声明：**本服务由第三方提供，我们尽力确保其安全性、准确性和可靠性，但无法保证其完全免于故障、中断、错误或攻击。因此，本公司在此声明：对于本服务的内容、准确性、完整性、可靠性、适用性以及及时性不作任何陈述、保证或承诺，不对您使用本服务所产生的任何直接或间接的损失或损害承担任何责任；对于您通过本服务访问的第三方网站、应用程序、产品和服务，不对其内容、准确性、完整性、可靠性、适用性以及及时性承担任何责任，您应自行承担使用后果产生的风险和责任；对于因您使用本服务而产生的任何损失、损害，包括但不限于直接损失、间接损失、利润损失、商誉损失、数据损失或其他经济损失，不承担任何责任，即使本公司事先已被告知可能存在此类损失或损害的可能性；我们保留不时修改本声明的权利，因此请您在使用本服务前定期检查本声明。如果您对本声明或本服务存在任何问题或疑问，请联系我们。
 
-本示例会自动的构建计算巢服务，具体的服务构建流程为：
-1. OOS ACS-ECS-UpdateImage模版执行命令构建ecs镜像.
-2. 通过构建好的ecs镜像创建ECS镜像部署物并完成分发.
-3. 创建计算巢服务并关联镜像部署物.
+## 前提条件
 
-创建过程大约持续15分钟，当服务变成待提交后构建成功。
+部署吉卜力风格生图服务实例，需要对部分阿里云资源进行访问和创建操作。因此您的账号需要包含如下资源的权限。
+**说明**：当您的账号是RAM账号时，才需要添加此权限。
 
-## 部署架构
+| 权限策略名称                          | 备注                     |
+|---------------------------------|------------------------|
+| AliyunECSFullAccess             | 管理云服务器服务（ECS）的权限       |
+| AliyunVPCFullAccess             | 管理专有网络（VPC）的权限         |
+| AliyunROSFullAccess             | 管理资源编排服务（ROS）的权限       |
+| AliyunComputeNestUserFullAccess | 管理计算巢服务（ComputeNest）的用户侧权限 |
 
-本部署架构为单机ecs部署，通过公网ip 8080端口访问。
-<img src="architecture.png" width="1500" height="700" align="bottom"/>
 
-## 服务构建计费说明
+## 计费说明
 
-测试本服务构建需要支付构建镜像过程中的ECS费用和快照费用，请确保账号中有足够的余额，预计消耗金额：
-- 构建镜像，需要创建ECS实例（ecs.c6.large，5Mbps公网带宽，40GiB高效云盘系统盘）：0.660元/小时，预计消耗总金额：0.660*0.1≈0.07元（构建镜像预计10分钟以内）。
-- 快照费用：该服务创建快照大小为40GiB，构建镜像地域默认为新加坡，那么消耗金额为：0.136元/GB/月 * 40 GB * 1月）/ 30天 / 24小时≈0.007元/小时,[快照计费参考](https://help.aliyun.com/zh/ecs/product-overview/snapshots-1)。
-
-创建服务实例涉及的费用参考服务实例计费说明。
-## 服务实例计费说明
-
-测试本服务在计算巢上的费用主要涉及：
+吉卜力风格生图在计算巢部署的费用主要涉及：
 
 - 所选vCPU与内存规格
 - 系统盘类型及容量
 - 公网带宽
 
-计费方式包括：
+## 部署架构
+<img src="1.png" width="1500" height="700" align="bottom"/>
 
-- 按量付费（小时）
-- 包年包月
+
+## 参数说明
+| 参数组         | 参数项    | 说明                                                                     |
+|-------------|--------|------------------------------------------------------------------------|
+| 服务实例        | 服务实例名称 | 长度不超过64个字符，必须以英文字母开头，可包含数字、英文字母、短划线（-）和下划线（_） |
+|             | 地域     | 服务实例部署的地域                                                              |
+|             | 付费类型   | 资源的计费类型：按量付费和包年包月                                                      |
+| ECS实例配置  | 实例类型   | 可用区下可以使用的实例规格                                                          |
+|              | 实例密码   | 长度8-30，必须包含三项（大写字母、小写字母、数字、 ()`~!@#$%^&*-+=&#124;{}[]:;'<>,.?/ 中的特殊符号） |
+| 网络配置        | 可用区    | ECS实例所在可用区                                                             |
+|             | VPC ID | 资源所在VPC                                                                |
+|             | 交换机ID  | 资源所在交换机                                                                |
 
 ## 部署流程
+1. 访问计算巢吉卜力风格生图[部署链接](https://computenest.console.aliyun.com/user/cn-hangzhou/serviceInstanceCreate?ServiceId=service-6af41cfcbb9e4f7a8709)
+   ，按提示填写部署参数，确认参数后点击**下一步：确认订单**：
+   ![image.png](2.png)
 
-### 部署步骤
+2. 确认订单完成后同意服务协议并点击 **立即创建** 进入部署阶段。
 
-0. 部署链接
- ![image.png](1.png)
-1. 单击部署链接，进入服务实例部署界面，根据界面提示，填写参数完成部署。
- ![image.png](2.png)
-2. 参数填写完成后可以看到对应询价明细，确认参数后点击**下一步：确认订单**。
- ![image.png](3.png)
-3. 确认订单完成后同意服务协议并点击**立即创建**，进入部署阶段。
-    ![image.png](4.png)
-   
-    ![image.png](5.png)
-4. 等待部署完成后就可以开始使用服务，进入服务实例详情点击visitUrl。
-    ![image.png](6.png)
-5. 部署结果：
-    ![image.png](7.png)
+3. 等待部署完成后就可以开始使用服务，进入服务实例详情点击安全代理访问。
+   ![image.png](3.png)
+   即可进入服务页面。
 
-
-## 服务详细说明
-
-本文通过将[spring-boot](https://atomgit.com/flow-example/spring-boot)构建后，将deploy.sh和application.jar打包成package.tgz放到artifacts目录下，
-然后通过OOS构建镜像SpringBootImage，构建镜像的基础镜像为centos_7_8_x64_20G_alibase_20211130.vhd，执行的命令为:
-```bash
-      yum install -y java
-      yum install -y git
-
-      # 下载包 例子是从git获取
-      git clone https://github.com/aliyun-computenest/springboot-ecs-image-demo.git
-      mkdir -p /home/admin/application
-      cp /root/springboot-ecs-image-demo/artifacts/package.tgz /home/admin/application
-      cd /home/admin/application
-      tar xvf package.tgz
-      rm /root/springboot-ecs-image-demo
-      rm package.tgz
-```
-
-templates/template.yaml主要由三部分组成：
-
-1. Parameters定义需要用户填写的参数，包括付费类型，实例规格和实例密码可用区参数。
-2. Resources定义需要开的资源，包括新开的vpc, vswitch和ecs实例, 以及执行命令的定义, InstanceGroup.ImageId定义为springboot，最终会由ecs镜像的部署物替换成对应地域的真正的镜像ID。
-3. Outputs定义需要最终在计算巢概览页中对用户展示的输出。
-
-## 服务配置
-
-[创建代运维服务完成实例运维](https://help.aliyun.com/zh/compute-nest/create-a-hosted-operations-and-maintenance-service?spm=a2c4g.11186623.0.i24#task-2167552])
-
-[创建包含变配功能的服务](https://help.aliyun.com/zh/compute-nest/use-cases/create-a-service-that-supports-specification-changes-and-change-the-specifications-of-a-service-instance?spm=a2c4g.11186623.0.i3])
-
-[创建包含服务升级功能的服务](https://help.aliyun.com/zh/compute-nest/upgrade-a-service-instance?spm=a2c4g.11186623.0.i17#task-2236803)
-
-## 服务交付
-
-[自定义服务架构图](https://help.aliyun.com/zh/compute-nest/customize-a-service-architecture?spm=a2c4g.11186623.0.0.56e736bfyUdlFm])
-
-[服务文档上线流程](https://help.aliyun.com/zh/compute-nest/use-cases/publish-documents-to-compute-nest?spm=a2c4g.313309.0.i0])
-
-[将服务上架云市场并上到云市场售卖](https://help.aliyun.com/zh/compute-nest/publish-a-service-to-alibaba-cloud-marketplace?spm=a2c4g.11186623.0.i7])
-
-## 其他说明
-
-[实例代码源地址](https://atomgit.com/flow-example/spring-boot)
-
-[软件包package.tgz构建流程参考](https://help.aliyun.com/document_detail/153848.html)
