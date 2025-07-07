@@ -60,10 +60,13 @@ Artifact:
     ArtifactName: EcsImage
     Description: EcsImage
     ArtifactBuildProperty:
-      RegionId: ap-southeast-1
-      SourceImageId: m-t4n7ttu9p7cbnxjlex02
+      EnableGpu: false
+      SystemDiskSize: 60
+      RegionId: cn-hangzhou
+      SourceImageId: m-bp1fhezyjcwtts6oj1o6
       CommandContent: |-
         #!/bin/bash
+        echo '10.0.1.142 www.modelscope.cn' >> /etc/hosts
         repo_url="https://www.modelscope.cn/studios/${ModelID}.git"
         repo_name=$(basename "$repo_url" .git)
         git clone "$repo_url" "/root/$repo_name"

@@ -277,13 +277,13 @@ Resources:
       InstanceType:
         Ref: EcsInstanceType
       SystemDiskCategory: cloud_essd
-      SystemDiskSize: 200
+      SystemDiskSize: 60
       InternetMaxBandwidthOut: 1
       IoOptimized: optimized
       MaxAmount: 1
       DiskMappings:
         - Category: cloud_essd
-          Size: 200
+          Size: 60
       # 数据盘初始化和挂载
   RunInstallCommand:
     Type: ALIYUN::ECS::RunCommand
